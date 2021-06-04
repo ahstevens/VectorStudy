@@ -721,8 +721,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stimulus: {fileID: 1475623649}
   probe: {fileID: 989398881}
+  text: {fileID: 1388524710}
   blankingTime: 3.5
   stimulusTime: 10
+  keyboardSamplingRate: 0.01
 --- !u!1 &2135071362
 GameObject:
   m_ObjectHideFlags: 0

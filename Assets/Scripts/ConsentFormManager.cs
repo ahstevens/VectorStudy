@@ -30,7 +30,7 @@ public class ConsentFormManager : MonoBehaviour
 
     public void Consent()
     {
-        SceneManager.LoadScene("Study");
+        SceneManager.LoadScene("Instructions");
     }
 
     public void Decline()

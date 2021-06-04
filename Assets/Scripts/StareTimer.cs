@@ -46,48 +46,46 @@ public class StareTimer : MonoBehaviour
     void Update()
     {
 
+        Ray gaze = new Ray(Camera.main.transform.position, Camera.main.transform.localToWorldMatrix.GetColumn(2));
+
+        Vector3 forward = Vector3.Cross(Camera.main.transform.localToWorldMatrix.GetColumn(0), Vector3.up).normalized;
+
+        if (easingGazeAnchor == Vector3.zero)
+        {
+            easingGazeAnchor = forward;
+            easingGazeTarget = easingGazeAnchor;
+            transform.position = gaze.origin + forward * textDistance;
+        }
+
+        if (Mathf.Abs(Vector3.Angle(easingGazeTarget, forward)) > 30)
+        {
+            easingGazeTarget = forward;
+
+            if (currentEaseCoroutine != null)
+            {
+                StopCoroutine(currentEaseCoroutine);
+                easingGazeAnchor = easingAngle;
+            }
+
+            currentEaseCoroutine = EasingCoroutine(easingTime);
+
+            StartCoroutine(currentEaseCoroutine);
+        }
+
+        //transform.position = gaze.origin + forward * 3f;
+
+        Vector3 textToHMD = (transform.position - Camera.main.transform.position).normalized;
+
+        Matrix4x4 billboardXform = Matrix4x4.identity;
+        billboardXform.SetColumn(0, Vector3.Cross(Vector3.up, textToHMD));
+        billboardXform.SetColumn(1, Vector3.up);
+        billboardXform.SetColumn(2, textToHMD);
+        billboardXform.SetRow(3, new Vector4(0,0,0,1));
+
+        transform.rotation = billboardXform.rotation;
+
         if (!done)
         {
-            Ray gaze = new Ray(Camera.main.transform.position, Camera.main.transform.localToWorldMatrix.GetColumn(2));
-
-            Vector3 forward = Vector3.Cross(Camera.main.transform.localToWorldMatrix.GetColumn(0), Vector3.up).normalized;
-
-            if (easingGazeAnchor == Vector3.zero)
-            {
-                easingGazeAnchor = forward;
-                easingGazeTarget = easingGazeAnchor;
-                transform.position = gaze.origin + forward * textDistance;
-            }
-
-            if (Mathf.Abs(Vector3.Angle(easingGazeTarget, forward)) > 30)
-            {
-                easingGazeTarget = forward;
-
-                if (currentEaseCoroutine != null)
-                {
-                    StopCoroutine(currentEaseCoroutine);
-                    easingGazeAnchor = easingAngle;
-                }
-
-                currentEaseCoroutine = EasingCoroutine(easingTime);
-
-                StartCoroutine(currentEaseCoroutine);
-            }
-
-            //transform.position = gaze.origin + forward * 3f;
-
-            Vector3 textToHMD = (transform.position - Camera.main.transform.position).normalized;
-
-            Matrix4x4 billboardXform = Matrix4x4.identity;
-            billboardXform.SetColumn(0, Vector3.Cross(Vector3.up, textToHMD));
-            billboardXform.SetColumn(1, Vector3.up);
-            billboardXform.SetColumn(2, textToHMD);
-            billboardXform.SetRow(3, new Vector4(0,0,0,1));
-
-            transform.rotation = billboardXform.rotation;
-            
-            Debug.DrawRay(gaze.origin, gaze.direction);
-
             RaycastHit hit;
             if (Physics.Raycast(gaze, out hit, Mathf.Infinity))
             {
@@ -122,6 +120,7 @@ public class StareTimer : MonoBehaviour
             waitTime += Time.deltaTime / fadeTime;
         }
 
+        GetComponent<TMPro.TextMeshPro>().fontMaterial.SetColor("_FaceColor", Color.white);
         gameObject.SetActive(false);
 
         Camera.main.gameObject.GetComponent<StudyControls>().StartStudy();

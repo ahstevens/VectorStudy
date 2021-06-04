@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.XR.Management;
+using UnityEngine.SceneManagement;
 
 public class StudyControls : MonoBehaviour
 {
@@ -80,32 +81,20 @@ public class StudyControls : MonoBehaviour
     public GameObject stimulus;
     public GameObject probe;
 
+    public GameObject text;
+
     public float blankingTime = 3.5f;
     public float stimulusTime = 10f;
+    public float keyboardSamplingRate = 0.01f;
 
     private StudyState studyState;
 
     private bool trialActive = false;
-    
-    private bool spaceJustPressed = false;
+
+    private bool endOfStudy = false;
 
 #if ENABLE_INPUT_SYSTEM
     InputAction probeResizeAction;
-
-    public void Awake()
-    {
-        XRGeneralSettings.Instance.Manager.InitializeLoaderSync();
-        XRGeneralSettings.Instance.Manager.StartSubsystems();
-    }
-
-    private void OnApplicationQuit()
-    {
-        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-        {
-            XRGeneralSettings.Instance.Manager.StopSubsystems();
-            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
-        }
-    }
 
     void Start()
     {
@@ -115,46 +104,26 @@ public class StudyControls : MonoBehaviour
 
         probe.GetComponent<Renderer>().enabled = false;
         stimulus.GetComponent<Renderer>().enabled = false;
-                
-        Debug.Log(XRSettings.loadedDeviceName);
-
-        var inputDevices = new List<UnityEngine.XR.InputDevice>();
-        UnityEngine.XR.InputDevices.GetDevices(inputDevices);
-
-        foreach (var device in inputDevices)
-        {
-            Debug.Log(string.Format("Device found with name '{0}' and role '{1}'", device.name, device.characteristics.ToString()));
-        }
     }
 #endif
 
     // Update is called once per frame
     void Update()
     {
-        // Exit Sample  
-
-        if (IsEscapePressed())
-        {            
-//            Application.Quit();
-//#if UNITY_EDITOR
-//            UnityEditor.EditorApplication.isPlaying = false;
-//#endif
-        }
-
-        if (IsSpacebarPressed())
-        {
-            var sender = new SendStudyResults();
-            StartCoroutine(sender.Upload(conditions, results));
-        }
-
         if (studyState.isActive() && !trialActive)
             StartCoroutine(PerformTrial());
 
-        if (studyState.isDone())
+        if (studyState.isDone() && !trialActive && !endOfStudy)
         {
-            StartCoroutine(_SaveResultsToFile());
-            //StartCoroutine(_UploadResults());
-            Application.Quit();
+            StartCoroutine(SaveResultsToFile());
+
+            var sender = new SendStudyResults();
+            sender.Prepare(conditions, results);
+            StartCoroutine(sender.Upload());
+
+            StartCoroutine(EndStudy());
+
+            endOfStudy = true;
         }
     }
 
@@ -168,28 +137,6 @@ public class StudyControls : MonoBehaviour
                 .With("Up", "<Keyboard>/upArrow")
                 .With("Down", "<Keyboard>/s")
                 .With("Down", "<Keyboard>/downArrow");
-    }
-
-    bool IsEscapePressed()
-    {
-        return Keyboard.current != null ? Keyboard.current.escapeKey.isPressed : false;
-    }
-
-    bool IsSpacebarPressed()
-    {
-        if (Keyboard.current == null)
-            return false;
-
-        if (Keyboard.current.spaceKey.isPressed && !spaceJustPressed)
-        {
-            spaceJustPressed = true;
-            return true;
-        }
-
-        if (spaceJustPressed && !Keyboard.current.spaceKey.isPressed)
-            spaceJustPressed = false;
-
-        return false;
     }
 
     IEnumerator PerformTrial()
@@ -220,6 +167,9 @@ public class StudyControls : MonoBehaviour
 
             if (probeMove != 0f)
                 probe.transform.localScale = new Vector3(probe.transform.localScale.x, probe.transform.localScale.y + 0.0005f * Mathf.Sign(probeMove), probe.transform.localScale.z);
+        
+            if (probe.transform.localScale.y < 0.0005f)
+                probe.transform.localScale = new Vector3(probe.transform.localScale.x, 0.0005f, probe.transform.localScale.z);
 
             if (probe.transform.localPosition.y != -probe.transform.localScale.y)
                 probe.transform.localPosition = new Vector3(probe.transform.localPosition.x, -probe.transform.localScale.y, probe.transform.localPosition.z);
@@ -239,7 +189,7 @@ public class StudyControls : MonoBehaviour
         trialActive = false;
     }
 
-    private IEnumerator _SaveResultsToFile()
+    private IEnumerator SaveResultsToFile()
     {
         //Path of the file
         string path = Application.dataPath + "/results.csv";
@@ -257,6 +207,8 @@ public class StudyControls : MonoBehaviour
 
         }
 
+        File.WriteAllText(Application.dataPath + "/metadata.txt", PlayerPrefs.GetString("participant") + "\n" + PlayerPrefs.GetString("age") + "\n" + PlayerPrefs.GetString("sex") + "\n" + PlayerPrefs.GetString("hmd"));
+
         yield return null;
 
         Debug.Log("Saved results to " + path);
@@ -265,6 +217,25 @@ public class StudyControls : MonoBehaviour
     public void StartStudy()
     {
         StartCoroutine(PerformTrial());
+    }
+
+    private IEnumerator EndStudy()
+    {
+        float ft = 0;
+
+        text.SetActive(true);
+        text.GetComponent<TMPro.TextMeshPro>().text = "Complete!\n\nPlease remove your HMD.";
+
+        while (ft < 1)
+        {
+            yield return null;
+            ft += Time.deltaTime / 5f;
+        }
+
+        ManualXRControl xr = new ManualXRControl();
+        xr.StopXR();
+
+        SceneManager.LoadScene("Ending");
     }
 }
 static class CCOM

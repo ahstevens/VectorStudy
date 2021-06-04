@@ -19,13 +19,13 @@ EditorBuildSettings:
     guid: fb0070dec215c1b4d88a0edc60c7ba75
   - enabled: 1
     path: Assets/Scenes/Practice.unity
-    guid: 698fff57e3682e941b76bca395d7d519
+    guid: 469e8be3224b8444983b497ed79332c7
   - enabled: 1
     path: Assets/Scenes/Study.unity
     guid: d1c3109bdb54ad54c8a2b2838528e640
   - enabled: 1
     path: Assets/Scenes/Ending.unity
-    guid: 601890e4d62441a4281bbb21fdee5154
+    guid: e09b38c8c06dd794aa658a9f34c1cf25
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 0f9f045c9e1faa04d8b7e17e7133ac80, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 84e118bb453005f45b6c52f2877bc6bb, type: 2}
