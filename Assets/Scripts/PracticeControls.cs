@@ -23,18 +23,11 @@ public class PracticeControls : MonoBehaviour
     public float keyboardSamplingRate = 0.01f;
 
     private bool trialActive = false;
-    
-    private bool spaceJustPressed = false;
 
     private int numPractices;
 
-#if ENABLE_INPUT_SYSTEM
-    InputAction probeResizeAction;
-
     void Start()
-    {        
-        mapActions();
-
+    {
         numPractices = 0;
 
         probe.GetComponent<Renderer>().enabled = false;
@@ -42,47 +35,17 @@ public class PracticeControls : MonoBehaviour
         instructionText.GetComponent<Renderer>().enabled = false;
         promptText.GetComponent<Renderer>().enabled = true;
     }
-#endif
 
     // Update is called once per frame
     void Update()
     {
-        if (IsSpacebarPressed() && !trialActive)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && !trialActive)
         {
             StartCoroutine(PerformTrial());
         }
 
         if (numPractices >= 5 && Keyboard.current != null && Keyboard.current.enterKey.IsPressed())
             SceneManager.LoadScene("Study");
-    }
-
-    void mapActions()
-    {
-        var map = new InputActionMap("Practice Controls");
-
-        probeResizeAction = map.AddAction("Resize Probe", binding: "<Mouse>/scroll");
-        probeResizeAction.AddCompositeBinding("Dpad")
-                .With("Up", "<Keyboard>/w")
-                .With("Up", "<Keyboard>/upArrow")
-                .With("Down", "<Keyboard>/s")
-                .With("Down", "<Keyboard>/downArrow");
-    }
-
-    bool IsSpacebarPressed()
-    {
-        if (Keyboard.current == null)
-            return false;
-
-        if (Keyboard.current.spaceKey.isPressed && !spaceJustPressed)
-        {
-            spaceJustPressed = true;
-            return true;
-        }
-
-        if (spaceJustPressed && !Keyboard.current.spaceKey.isPressed)
-            spaceJustPressed = false;
-
-        return false;
     }
 
     IEnumerator PerformTrial()
@@ -100,13 +63,19 @@ public class PracticeControls : MonoBehaviour
         stimulus.GetComponent<Renderer>().enabled = true;
         promptText.GetComponent<Renderer>().enabled = false;
         instructionText.GetComponent<Renderer>().enabled = true;
-
-        probeResizeAction.Enable();
-
+        
         while (tt < 1)
         {
 
-            float probeMove = probeResizeAction.ReadValue<Vector2>().y;
+            int probeMove = 0;
+
+            var kb = Keyboard.current;
+
+            if (kb.upArrowKey.isPressed || kb.leftArrowKey.isPressed || kb.wKey.isPressed || kb.dKey.isPressed)
+                probeMove = 1;
+
+            if (kb.downArrowKey.isPressed || kb.rightArrowKey.isPressed || kb.sKey.isPressed || kb.aKey.isPressed)
+                probeMove -= 1;
 
             if (probeMove != 0f)
                 probe.transform.localScale = new Vector3(probe.transform.localScale.x, probe.transform.localScale.y + 0.0005f * Mathf.Sign(probeMove), probe.transform.localScale.z);
@@ -118,8 +87,6 @@ public class PracticeControls : MonoBehaviour
 
             tt += Time.deltaTime / stimulusTime;
         }
-
-        probeResizeAction.Disable();
 
         numPractices++;
 

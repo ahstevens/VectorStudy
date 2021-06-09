@@ -10,7 +10,7 @@ public class InstructionsMenuManager : MonoBehaviour
     private GameObject xrButton;
     private GameObject proceedButton;
     private ManualXRControl xr;
-
+    
     public void Start()
     {
         xr = new ManualXRControl();

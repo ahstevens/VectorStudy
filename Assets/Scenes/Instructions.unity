@@ -455,14 +455,13 @@ MonoBehaviour:
 
 
     Please remain seated at your computer. You will need access
-    to your HMD, as well as a keyboard OR a mouse with a scroll wheel.
+    to your HMD as well as a keyboard.
 
 
-    When
-    you are ready, click the button at the bottom of the screen to initialize the
-    OpenXR system. Once it is ready, you may click to begin practice and put on your
-    headset. You will be prompted to remove your headset at the conclusion of the
-    experiment.'
+    When you are ready, click the button
+    at the bottom of the screen to initialize the OpenXR system. Once it is ready,
+    you may click to begin practice and put on your headset. You will be prompted
+    to remove your headset at the conclusion of the experiment.'
 --- !u!222 &35723860
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -903,7 +902,7 @@ MonoBehaviour:
   m_TrackedDevicePositionAction: {fileID: 4754684134866288074, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 1025543830046995696, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_DeselectOnBackgroundClick: 1
-  m_PointerBehavior: 0
+  m_PointerBehavior: 2
 --- !u!114 &795544509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1224,7 +1223,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 834441940}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.983996
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1301,7 +1300,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 16.000021}
   m_SizeDelta: {x: 0, y: 1000}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1334796981

@@ -215,7 +215,6 @@ GameObject:
   - component: {fileID: 1388524713}
   - component: {fileID: 1388524712}
   - component: {fileID: 1388524711}
-  - component: {fileID: 1388524715}
   m_Layer: 0
   m_Name: Instruction Text
   m_TagString: Untagged
@@ -251,9 +250,9 @@ MonoBehaviour:
 
 
     Use
-    the Up/Down Keys
+    the arrow keys or WASD
 
-    or your Mouse Wheel
+    on your keyboard
 
     to adjust the white rod length.'
   m_isRightToLeft: 0
@@ -282,8 +281,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -304,7 +303,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_enableExtraPadding: 0
+  m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
   m_parseCtrlCharacters: 1
@@ -377,7 +376,7 @@ RectTransform:
   m_GameObject: {fileID: 1388524710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.57}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 1}
+  m_LocalScale: {x: 0.0045, y: 0.0045, z: 1}
   m_Children: []
   m_Father: {fileID: 1687258585}
   m_RootOrder: 3
@@ -385,21 +384,8 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 30, y: 10}
+  m_SizeDelta: {x: 50, y: 2.5}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!65 &1388524715
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1388524710}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 30, y: 10, z: 0}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1449806163
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,7 +686,6 @@ GameObject:
   - component: {fileID: 1828669721}
   - component: {fileID: 1828669724}
   - component: {fileID: 1828669723}
-  - component: {fileID: 1828669722}
   m_Layer: 0
   m_Name: Prompt Text
   m_TagString: Untagged
@@ -717,7 +702,7 @@ RectTransform:
   m_GameObject: {fileID: 1828669720}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.57}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 1}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 1}
   m_Children: []
   m_Father: {fileID: 1687258585}
   m_RootOrder: 4
@@ -725,21 +710,8 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 30, y: 10}
+  m_SizeDelta: {x: 41.1, y: 2.5}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!65 &1828669722
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828669720}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 30, y: 10, z: 0}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1828669723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -760,11 +732,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Press the Space Bar
+  m_text: 'Put on your HMD
+
+
+    Press the Space Bar
 
     on your keyboard
 
-    to begin a practice trial.'
+    to
+    begin a practice trial.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -791,8 +767,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -813,7 +789,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_enableExtraPadding: 0
+  m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
   m_parseCtrlCharacters: 1

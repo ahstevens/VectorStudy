@@ -71,6 +71,11 @@ public class StudyControls : MonoBehaviour
             return false;
         }
 
+        public int getCurrentTrialNumber()
+        {
+            return currentCondition;
+        }
+
         public void recordState(GameObject probe)
         {
             if (isActive())
@@ -81,7 +86,8 @@ public class StudyControls : MonoBehaviour
     public GameObject stimulus;
     public GameObject probe;
 
-    public GameObject text;
+    public GameObject stareText;
+    public GameObject statusText;
 
     public float blankingTime = 3.5f;
     public float stimulusTime = 10f;
@@ -93,19 +99,13 @@ public class StudyControls : MonoBehaviour
 
     private bool endOfStudy = false;
 
-#if ENABLE_INPUT_SYSTEM
-    InputAction probeResizeAction;
-
     void Start()
     {
         studyState = new StudyState();
-
-        mapActions();
-
+        
         probe.GetComponent<Renderer>().enabled = false;
         stimulus.GetComponent<Renderer>().enabled = false;
     }
-#endif
 
     // Update is called once per frame
     void Update()
@@ -127,21 +127,10 @@ public class StudyControls : MonoBehaviour
         }
     }
 
-    void mapActions()
-    {
-        var map = new InputActionMap("Study Controls");
-
-        probeResizeAction = map.AddAction("Resize Probe", binding: "<Mouse>/scroll");
-        probeResizeAction.AddCompositeBinding("Dpad")
-                .With("Up", "<Keyboard>/w")
-                .With("Up", "<Keyboard>/upArrow")
-                .With("Down", "<Keyboard>/s")
-                .With("Down", "<Keyboard>/downArrow");
-    }
-
     IEnumerator PerformTrial()
     {
         float bt = 0;
+        float mt = 0;
         float tt = 0;
 
         trialActive = true;
@@ -149,21 +138,35 @@ public class StudyControls : MonoBehaviour
         studyState.loadStimulusCondition(stimulus);
         probe.transform.localScale = new Vector3(0.003f, 0.005f, 0.003f);
 
+        statusText.SetActive(true);
+        statusText.GetComponent<TMPro.TextMeshPro>().text = "Trial " + (studyState.getCurrentTrialNumber() + 1) + " of 24";
+
         while (bt < 1)
         {
             yield return null;
 
+            if (mt < 1)
+                mt += Time.deltaTime / (blankingTime - 0.5f);
+            else
+                statusText.SetActive(false);
+
             bt += Time.deltaTime / blankingTime;
-        }        
+        }
 
         probe.GetComponent<Renderer>().enabled = true;
         stimulus.GetComponent<Renderer>().enabled = true;
-        
-        probeResizeAction.Enable();
 
         while (tt < 1)
         {
-            float probeMove = probeResizeAction.ReadValue<Vector2>().y;
+            int probeMove = 0;
+
+            var kb = Keyboard.current;
+
+            if (kb.upArrowKey.isPressed || kb.leftArrowKey.isPressed || kb.wKey.isPressed || kb.dKey.isPressed)
+                probeMove = 1;
+
+            if (kb.downArrowKey.isPressed || kb.rightArrowKey.isPressed || kb.sKey.isPressed || kb.aKey.isPressed)
+                probeMove -= 1;
 
             if (probeMove != 0f)
                 probe.transform.localScale = new Vector3(probe.transform.localScale.x, probe.transform.localScale.y + 0.0005f * Mathf.Sign(probeMove), probe.transform.localScale.z);
@@ -178,8 +181,6 @@ public class StudyControls : MonoBehaviour
 
             tt += Time.deltaTime / stimulusTime;
         }
-
-        probeResizeAction.Disable();
 
         probe.GetComponent<Renderer>().enabled = false;
         stimulus.GetComponent<Renderer>().enabled = false;
@@ -223,8 +224,8 @@ public class StudyControls : MonoBehaviour
     {
         float ft = 0;
 
-        text.SetActive(true);
-        text.GetComponent<TMPro.TextMeshPro>().text = "Complete!\n\nPlease remove your HMD.";
+        stareText.SetActive(true);
+        stareText.GetComponent<TMPro.TextMeshPro>().text = "Complete!\n\nPlease remove your HMD.";
 
         while (ft < 1)
         {
