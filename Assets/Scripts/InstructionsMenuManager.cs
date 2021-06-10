@@ -34,7 +34,25 @@ public class InstructionsMenuManager : MonoBehaviour
             proceedButton.GetComponent<Button>().interactable = true;
             xrButton.GetComponent<Button>().interactable = false;
             xrButton.GetComponentInChildren<Text>().text = "OpenXR Initialized";
+
+            StartCoroutine(Countdown());
         }
+    }
+
+    IEnumerator Countdown()
+    {
+        float countdown = 5f;
+
+        while (countdown >= 0f)
+        {
+            yield return null;
+
+            proceedButton.GetComponentInChildren<Text>().text = "Beginning in " + countdown.ToString("0");
+
+            countdown -= Time.deltaTime;
+        }
+
+        Next();
     }
 
     public void Next()

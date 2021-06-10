@@ -133,9 +133,12 @@ public class StudyControls : MonoBehaviour
         float mt = 0;
         float tt = 0;
 
+
+        if (!studyState.loadStimulusCondition(stimulus))
+            yield break;
+
         trialActive = true;
 
-        studyState.loadStimulusCondition(stimulus);
         probe.transform.localScale = new Vector3(0.003f, 0.005f, 0.003f);
 
         statusText.SetActive(true);
@@ -193,7 +196,9 @@ public class StudyControls : MonoBehaviour
     private IEnumerator SaveResultsToFile()
     {
         //Path of the file
-        string path = Application.dataPath + "/results.csv";
+        string path = Application.dataPath + "/../results.csv";
+
+        string participant = PlayerPrefs.GetString("participant");
 
         //Create File if it doesn't exist
         if (!File.Exists(path))
@@ -202,13 +207,13 @@ public class StudyControls : MonoBehaviour
 
             for (int i = 0; i < 24; ++i)
             {
-                string result = "person," + i + ",0,57,0,1,1," + conditions[i].glyphAngle + "," + conditions[i].glyphLength * 100 + "," + results[i] * 100f + "\n";
+                string result = participant + "," + i + ",0,57,0,1,1," + conditions[i].glyphAngle + "," + conditions[i].glyphLength * 100 + "," + results[i] * 100f + "\n";
                 File.AppendAllText(path, result);
             }
 
         }
 
-        File.WriteAllText(Application.dataPath + "/metadata.txt", PlayerPrefs.GetString("participant") + "\n" + PlayerPrefs.GetString("age") + "\n" + PlayerPrefs.GetString("sex") + "\n" + PlayerPrefs.GetString("hmd"));
+        File.WriteAllText(Application.dataPath + "/../metadata.txt", participant + "\n" + PlayerPrefs.GetString("age") + "\n" + PlayerPrefs.GetString("sex") + "\n" + PlayerPrefs.GetString("hmd"));
 
         yield return null;
 
