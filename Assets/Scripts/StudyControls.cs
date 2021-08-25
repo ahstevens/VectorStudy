@@ -195,10 +195,10 @@ public class StudyControls : MonoBehaviour
 
     private IEnumerator SaveResultsToFile()
     {
-        //Path of the file
-        string path = Application.dataPath + "/../results.csv";
-
         string participant = PlayerPrefs.GetString("participant");
+
+        //Path of the file
+        string path = Application.dataPath + "/../" + participant + "_results.csv";
 
         //Create File if it doesn't exist
         if (!File.Exists(path))
@@ -213,7 +213,7 @@ public class StudyControls : MonoBehaviour
 
         }
 
-        File.WriteAllText(Application.dataPath + "/../metadata.txt", participant + "\n" + PlayerPrefs.GetString("age") + "\n" + PlayerPrefs.GetString("sex") + "\n" + PlayerPrefs.GetString("hmd"));
+        File.WriteAllText(Application.dataPath + "/../" + participant + "_metadata.txt", participant + "\n" + PlayerPrefs.GetString("age") + "\n" + PlayerPrefs.GetString("sex") + "\n" + PlayerPrefs.GetString("hmd"));
 
         yield return null;
 
