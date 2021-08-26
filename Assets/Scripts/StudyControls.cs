@@ -13,9 +13,9 @@ using UnityEngine.SceneManagement;
 
 public class StudyControls : MonoBehaviour
 {
-    static StudyCondition[] conditions = new StudyCondition[24];
+    static StudyCondition[] conditions = new StudyCondition[48];
 
-    static float[] results = new float[24];
+    static float[] results = new float[48];
 
     class StudyState
     {
@@ -44,9 +44,11 @@ public class StudyControls : MonoBehaviour
         {
             var glyphAngles = new List<float> { 0f, 15f, 30f, 45f, 60f, 75f, 90f, 105f, 120f, 135f, 150f, 165f };
             var glyphLengths = new List<float> { 0.1f, 0.2f };
+            var replications = 2;
             foreach (float r in glyphAngles)
                 foreach (float l in glyphLengths)
-                    conditionQueue.Add(new StudyCondition(r, l));
+                    for (int i = 0; i < replications; ++i)
+                        conditionQueue.Add(new StudyCondition(r, l));
 
             conditionQueue.Shuffle();
 
@@ -56,19 +58,18 @@ public class StudyControls : MonoBehaviour
             
         }
 
-        public bool loadStimulusCondition(GameObject stimulus)
+        public bool incrementCondition()
         {
             currentCondition++;
 
-            if (isActive())
-            {
-                stimulus.transform.localScale = new Vector3(stimulus.transform.localScale.x, conditions[currentCondition].glyphLength * 0.5f, stimulus.transform.localScale.z);
-                stimulus.transform.localEulerAngles = new Vector3(stimulus.transform.localEulerAngles.x, conditions[currentCondition].glyphAngle, stimulus.transform.localEulerAngles.z);
-                
-                return true;
-            }
+            return isActive();
+        }
 
-            return false;
+        public void loadStimulusCondition(GameObject stimulus)
+        {
+            stimulus.transform.localScale = new Vector3(stimulus.transform.localScale.x, conditions[currentCondition].glyphLength * 0.5f, stimulus.transform.localScale.z);
+            stimulus.transform.localEulerAngles = new Vector3(90, conditions[currentCondition].glyphAngle, 90);
+           
         }
 
         public int getCurrentTrialNumber()
@@ -134,15 +135,14 @@ public class StudyControls : MonoBehaviour
         float tt = 0;
 
 
-        if (!studyState.loadStimulusCondition(stimulus))
+        if (!studyState.incrementCondition())
             yield break;
 
         trialActive = true;
 
-        probe.transform.localScale = new Vector3(0.003f, 0.005f, 0.003f);
 
         statusText.SetActive(true);
-        statusText.GetComponent<TMPro.TextMeshPro>().text = "Trial " + (studyState.getCurrentTrialNumber() + 1) + " of 24";
+        statusText.GetComponent<TMPro.TextMeshPro>().text = "Trial " + (studyState.getCurrentTrialNumber() + 1) + " of 48";
 
         while (bt < 1)
         {
@@ -156,9 +156,29 @@ public class StudyControls : MonoBehaviour
             bt += Time.deltaTime / blankingTime;
         }
 
+        Transform hmdAtStart = this.gameObject.transform;
+
+        Vector3 forwardFromHMD = Vector3.Cross(hmdAtStart.localToWorldMatrix.GetColumn(0), Vector3.up).normalized;
+
+        GameObject probePivot = GameObject.Find("Pivot Point");
+
+        probePivot.transform.position = hmdAtStart.position + forwardFromHMD * 0.57f;// + Vector3.up * 0.056f;
+
+        probe.transform.localScale = new Vector3(0.003f, 0.005f, 0.003f);
+
+        studyState.loadStimulusCondition(stimulus);
+        stimulus.transform.position = probePivot.transform.position + Vector3.up * 0.028f;
+        //stimulus.transform.rotation = hmdAtStart.rotation * stimulus.transform.rotation;
+        stimulus.transform.rotation = Quaternion.Euler(stimulus.transform.eulerAngles.x, hmdAtStart.eulerAngles.y + stimulus.transform.eulerAngles.y, stimulus.transform.eulerAngles.z);
+
+        GameObject light = GameObject.Find("Directional Light");
+
+        light.transform.position = hmdAtStart.position + Vector3.Cross(Vector3.up, forwardFromHMD) + Vector3.up - forwardFromHMD;
+        light.transform.rotation = Quaternion.Euler(45, hmdAtStart.eulerAngles.y - 45, 0);
+
         probe.GetComponent<Renderer>().enabled = true;
         stimulus.GetComponent<Renderer>().enabled = true;
-
+        
         while (tt < 1)
         {
             int probeMove = 0;
@@ -205,7 +225,7 @@ public class StudyControls : MonoBehaviour
         {
             File.WriteAllText(path, "id,trial,ipd,view.dist,view.angle,view.dist.factor,fishtank,rod.angle,rod.length,response\n");
 
-            for (int i = 0; i < 24; ++i)
+            for (int i = 0; i < 48; ++i)
             {
                 string result = participant + "," + i + ",0,57,0,1,1," + conditions[i].glyphAngle + "," + conditions[i].glyphLength * 100 + "," + results[i] * 100f + "\n";
                 File.AppendAllText(path, result);

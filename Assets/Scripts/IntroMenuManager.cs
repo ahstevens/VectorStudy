@@ -53,7 +53,7 @@ public class IntroMenuManager : MonoBehaviour
         PlayerPrefs.SetString("age", age);
         PlayerPrefs.SetString("sex", maleChecked ? "m" : "f");
         PlayerPrefs.SetString("hmd", hmd);
-        SceneManager.LoadScene("Consent");
+        SceneManager.LoadScene("Instructions");
     }
 
     public void Exit()

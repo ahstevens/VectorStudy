@@ -20,7 +20,7 @@ public class SendStudyResults
 
         string metadata = PlayerPrefs.GetString("participant") + "\n" + PlayerPrefs.GetString("age") + "\n" + PlayerPrefs.GetString("sex") + "\n" + PlayerPrefs.GetString("hmd");
 
-        for (int i = 0; i < 24; ++i)
+        for (int i = 0; i < 48; ++i)
         {
             result += pName + "," + i + ",0,57,0,1,1," + conditions[i].glyphAngle + "," + conditions[i].glyphLength * 100 + "," + results[i] * 100f + "\n";
         }

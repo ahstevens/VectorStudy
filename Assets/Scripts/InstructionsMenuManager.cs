@@ -57,7 +57,7 @@ public class InstructionsMenuManager : MonoBehaviour
 
     public void Next()
     {        
-        SceneManager.LoadScene("Practice");
+        SceneManager.LoadScene("Study");
     }
 
     public void Exit()

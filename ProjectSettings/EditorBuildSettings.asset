@@ -11,13 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Intro.unity
     guid: f981b7d347c859e4693c46e9aeddf31f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Consent.unity
     guid: 618123a858f84f44dbee073e3fe6f670
   - enabled: 1
     path: Assets/Scenes/Instructions.unity
     guid: fb0070dec215c1b4d88a0edc60c7ba75
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Practice.unity
     guid: 469e8be3224b8444983b497ed79332c7
   - enabled: 1
