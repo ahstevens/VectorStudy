@@ -57,7 +57,7 @@ public class InstructionsMenuManager : MonoBehaviour
 
     public void Next()
     {        
-        SceneManager.LoadScene("Practice");
+        SceneManager.LoadScene("Study Mirrored Lighting");
     }
 
     public void Exit()

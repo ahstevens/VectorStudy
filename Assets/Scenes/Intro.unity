@@ -3526,6 +3526,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: HTC Vive Pro (or Vive Pro Eye)
       m_Image: {fileID: 0}
+    - m_Text: HTC Vive Pro 2
+      m_Image: {fileID: 0}
     - m_Text: HTC Vive Cosmos
       m_Image: {fileID: 0}
     - m_Text: HTC Vive Cosmos Elite
