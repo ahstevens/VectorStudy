@@ -13,9 +13,9 @@ using UnityEngine.SceneManagement;
 
 public class StudyControls : MonoBehaviour
 {
-    static StudyCondition[] conditions = new StudyCondition[24];
+    static StudyCondition[] conditions = new StudyCondition[48];
 
-    static float[] results = new float[24];
+    static float[] results = new float[48];
 
     class StudyState
     {
@@ -44,9 +44,11 @@ public class StudyControls : MonoBehaviour
         {
             var glyphAngles = new List<float> { 0f, 15f, 30f, 45f, 60f, 75f, 90f, 105f, 120f, 135f, 150f, 165f };
             var glyphLengths = new List<float> { 0.1f, 0.2f };
+            var replications = 2;
             foreach (float r in glyphAngles)
                 foreach (float l in glyphLengths)
-                    conditionQueue.Add(new StudyCondition(r, l));
+                    for (int i = 0; i < replications; ++i)
+                        conditionQueue.Add(new StudyCondition(r, l));
 
             conditionQueue.Shuffle();
 
@@ -117,9 +119,9 @@ public class StudyControls : MonoBehaviour
         {
             StartCoroutine(SaveResultsToFile());
 
-            var sender = new SendStudyResults();
-            sender.Prepare(conditions, results);
-            StartCoroutine(sender.Upload());
+            //var sender = new SendStudyResults();
+            //sender.Prepare(conditions, results);
+            //StartCoroutine(sender.Upload());
 
             StartCoroutine(EndStudy());
 
@@ -142,7 +144,7 @@ public class StudyControls : MonoBehaviour
         probe.transform.localScale = new Vector3(0.003f, 0.005f, 0.003f);
 
         statusText.SetActive(true);
-        statusText.GetComponent<TMPro.TextMeshPro>().text = "Trial " + (studyState.getCurrentTrialNumber() + 1) + " of 24";
+        statusText.GetComponent<TMPro.TextMeshPro>().text = "Trial " + (studyState.getCurrentTrialNumber() + 1) + " of 48";
 
         while (bt < 1)
         {
@@ -205,7 +207,7 @@ public class StudyControls : MonoBehaviour
         {
             File.WriteAllText(path, "id,trial,ipd,view.dist,view.angle,view.dist.factor,fishtank,rod.angle,rod.length,response\n");
 
-            for (int i = 0; i < 24; ++i)
+            for (int i = 0; i < 48; ++i)
             {
                 string result = participant + "," + i + ",0,57,0,1,1," + conditions[i].glyphAngle + "," + conditions[i].glyphLength * 100 + "," + results[i] * 100f + "\n";
                 File.AppendAllText(path, result);
